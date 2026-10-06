@@ -60,6 +60,49 @@ The LLM evaluation suite uses semantic keyword variants so that responses can be
 
 ---
 
+## 📸 Visual Showcase
+
+### 🔐 1. Operational Security & Identity Gateway
+
+![Secured Operator Login](assets/ui_login.png)
+
+### 🛰️ 2. Real-Time Telemetry & Core Dashboard Panels
+
+![Centralized Control Panel](assets/dashboard_overview.png)
+
+![LLM Operational Recommendations](assets/dashboard_recommendations.png)
+
+### 🧬 3. Applied AI, Statistics & Machine Learning Forecasts
+
+![Pearson Statistical Matrix](assets/analytics_correlation_matrix.png)
+
+![Temperature Linear Prediction](assets/analytics_ml_forecasting_regression.png)
+
+![Joint Density Dispersion](assets/analytics_joint_density_dispersion.png)
+
+![Joint Density Violin Metrics](assets/analytics_joint_density_violin_metrics.png)
+
+![ML Regression Equation Trace](assets/analytics_ml_regression_equation.png)
+
+![ML Independent Feature Selector](assets/analytics_ml_independent_dropdown.png)
+
+![ML Target Selector](assets/analytics_ml_target_dropdown.png)
+
+### ⚙️ 4. Administration Controls & System Configuration
+
+![System Administration Panel](assets/panel_settings.png)
+
+![Data Export Module](assets/export_module.png)
+
+![Telemetry Report](assets/telemetry_report.png)
+
+### 🏙️ 5. Structural Architecture & Unified Onboarding
+
+![Architecture Overview](assets/about_architecture_overview.png)
+
+![Multilingual Selector](assets/bout_language_selector_dropdown.png)
+
+![Station Selector](assets/about_station_selector_dropdown.png)
 # 🎯 Core Objectives
 
 The application was built to demonstrate practical engineering capabilities across several domains:
