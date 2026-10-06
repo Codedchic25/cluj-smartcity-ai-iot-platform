@@ -1,0 +1,106 @@
+{
+    "execution_timestamp": "2026-10-06 16:35:59",
+    "model_deployed": "openai/gpt-oss-20b",
+    "total_evaluated_scenarios": 5,
+    "successful_compliance_count": 5,
+    "failed_compliance_count": 0,
+    "success_rate_percentage": 100.0,
+    "detailed_metrics": [
+        {
+            "scenario_name": "1. Temperature Heatwave",
+            "target_location": "Mărăști - Sens Giratoriu",
+            "telemetry": {
+                "temperature": 38.5,
+                "noise_level": 58.0,
+                "traffic_load": 45.0,
+                "air_quality": 25.0,
+                "soil_moisture": 45.0
+            },
+            "assertion_keyword": "temperature",
+            "matched_compliance": true,
+            "matched_variants": [
+                "temperature",
+                "temperatura"
+            ],
+            "payload_length": 523,
+            "model_response": "**Operational Recommendation (Cluj-Napoca):**\n\n**Status:** NORMAL\n\n**Telemetry Assessment**\n\n- Temperature: 38.5 °C\n- PM2.5: 25.0 µg/m³\n- Noise Level: 58.0 dB\n- Traffic Load: 45.0 %\n- Soil Moisture: 45.0 %\n\n**Assessment**\n\nTemperatura ambiantă este 38.5 °C. Concentrarea PM2.5 este 25.0 µg/m³. Nivelul de zgomot este 58.0 dB. Încărcarea traficului și umiditatea solului sunt 45.0 %.\n\n**Recommended Actions**\n\n- Continuați monitorizarea rutinară a parametrilor.\n\n**Data Limitations**\n\nNo material data limitation identified."
+        },
+        {
+            "scenario_name": "2. Noise Index Breach",
+            "target_location": "Mănăștur - Str. Primăverii",
+            "telemetry": {
+                "temperature": 22.0,
+                "noise_level": 82.0,
+                "traffic_load": 55.0,
+                "air_quality": 30.0,
+                "soil_moisture": 50.0
+            },
+            "assertion_keyword": "noise",
+            "matched_compliance": true,
+            "matched_variants": [
+                "noise",
+                "zgomot",
+                "db",
+                "dB"
+            ],
+            "payload_length": 777,
+            "model_response": "**Operational Recommendation (Cluj-Napoca):**\n\n**Status:** NORMAL\n\n**Telemetry Assessment**\n\n- Temperature: 22.0 °C\n- PM2.5: 30.0 µg/m³\n- Noise Level: 82.0 dB\n- Traffic Load: 55.0 %\n- Soil Moisture: 50.0 %\n\n**Assessment**\n\nTemperatura ambientă este 22.0 °C, iar concentrația PM2.5 este 30.0 µg/m³. Nivelul de zgomot de 82.0 dB și încărcarea traficului de 55.0 % indică un trafic moderat. Umiditatea solului în spațiile verzi este 50.0 %. Nu există date care să indice depășirea unor praguri operative.\n\n**Recommended Actions**\n\n1. Continuarea monitorizării periodice a parametrilor.  \n2. Verificarea regulată a calibrării senzorilor.  \n3. Analiza tendințelor pe termen lung pentru a identifica eventuale schimbări.\n\n**Data Limitations**\n\nNo material data limitation identified."
+        },
+        {
+            "scenario_name": "3. Traffic Load Congestion",
+            "target_location": "Piața Unirii - Centru Istoric",
+            "telemetry": {
+                "temperature": 24.0,
+                "noise_level": 78.0,
+                "traffic_load": 92.0,
+                "air_quality": 35.0,
+                "soil_moisture": 40.0
+            },
+            "assertion_keyword": "traffic",
+            "matched_compliance": true,
+            "matched_variants": [
+                "traffic",
+                "trafic",
+                "traficul"
+            ],
+            "payload_length": 832,
+            "model_response": "**Operational Recommendation (Cluj-Napoca):**\n\n**Status:** NORMAL\n\n**Telemetry Assessment**\n\n- Temperature: 24.0 °C\n- PM2.5: 35.0 µg/m³\n- Noise Level: 78.0 dB\n- Traffic Load: 92.0 %\n- Soil Moisture: 40.0 %\n\n**Assessment**\n\nValorile actuale indică temperatură moderată, concentrație PM2.5 moderată, zgomot moderat, trafic ridicat și umiditate sol moderată. Nu există alertă istorică relevantă. Nu există informații despre praguri operaționale pentru interpretarea acestor valori.\n\n**Recommended Actions**\n\n1. Continuați monitorizarea rutinară a temperaturii, PM2.5, zgomotului, traficului și umidității solului.  \n2. Verificați calibrarea senzorilor dacă viitoarele citiri prezintă abateri semnificative.  \n3. Nu este necesară intervenție imediată.\n\n**Data Limitations**\n\nLipsa pragurilor operaționale pentru interpretarea valorilor."
+        },
+        {
+            "scenario_name": "4. Air Quality Critical PM2.5",
+            "target_location": "Zorilor - Str. Observatorului",
+            "telemetry": {
+                "temperature": 21.0,
+                "noise_level": 52.0,
+                "traffic_load": 40.0,
+                "air_quality": 115.0,
+                "soil_moisture": 42.0
+            },
+            "assertion_keyword": "air",
+            "matched_compliance": true,
+            "matched_variants": [
+                "pm2.5"
+            ],
+            "payload_length": 747,
+            "model_response": "**Operational Recommendation (Cluj-Napoca):**\n\n**Status:** NORMAL\n\n**Telemetry Assessment**\n\n- Temperature: 21.0 °C\n- PM2.5: 115.0 µg/m³\n- Noise Level: 52.0 dB\n- Traffic Load: 40.0 %\n- Soil Moisture: 42.0 %\n\n**Assessment**\n\nTemperatura ambiantă este 21.0 °C. Concentrația PM2.5 este 115.0 µg/m³. Nivelul de umiditate a solului în spațiul verde este 42.0 %. Nu există informații despre praguri de operare, deci nu se poate determina dacă valorile depășesc sau nu limitele aplicabile.\n\n**Recommended Actions**\n\n1. Monitorizarea continuă a parametrilor PM2.5 și umiditatea solului pentru a detecta eventuale variații.  \n2. Înregistrarea datelor pentru analiză de tendințe pe termen lung.\n\n**Data Limitations**\n\nNo material data limitation identified."
+        },
+        {
+            "scenario_name": "5. Soil Moisture Drought Critical",
+            "target_location": "Parcul Central - Spații Verzi",
+            "telemetry": {
+                "temperature": 34.0,
+                "noise_level": 55.0,
+                "traffic_load": 35.0,
+                "air_quality": 20.0,
+                "soil_moisture": 12.0
+            },
+            "assertion_keyword": "soil",
+            "matched_compliance": true,
+            "matched_variants": [
+                "sol"
+            ],
+            "payload_length": 488,
+            "model_response": "❌ Ingestion Gateway Failure: Unable to complete operation due to active context error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01ksa8jc5ve2zakw9vhy9fgkjf` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 3742, Requested 4575. Please try again in 2.3775s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+        }
+    ]
+}
