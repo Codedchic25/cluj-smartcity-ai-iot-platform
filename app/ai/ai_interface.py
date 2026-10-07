@@ -103,12 +103,11 @@ class UrbanAiAssistantComponent:
         temperature: float,
         air_quality: float,
         soil_moisture: float,
-        noise_level: float,
-        traffic_load: float,
         translations: dict[str, str],
+        noise_level: float = 0.0,
+        traffic_load: float = 0.0,
     ) -> None:
         """Renders the AI assistant card with persistent state and dynamic prompt injection."""
-
         prompt_template = self._load_prompt_template()
         if not prompt_template:
             return
@@ -120,6 +119,26 @@ class UrbanAiAssistantComponent:
         active_lang = st.session_state.get("lang", "RO")
         historical_alerts_log = self._context_reader.get_latest_alerts_context(limit_lines=5)
 
+        # Injecting operational critical thresholds context from settings layer
+        try:
+            with sqlite3.connect(self._context_reader._database_path, timeout=5) as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    """
+                    SELECT temp_limit, noise_limit, traffic_limit, air_limit, soil_limit
+                    FROM settings JOIN sensors ON sensors.id = settings.sensor_id WHERE name = ?;
+                    """,
+                    (location,),
+                )
+                row = cursor.fetchone()
+                temp_lim, noise_lim, traffic_lim, air_lim, soil_lim = (
+                    row if row else (32.0, 75.0, 80.0, 80.0, 35.0)
+                )
+        except Exception:
+            temp_lim, noise_lim, traffic_lim, air_lim, soil_lim = (32.0, 75.0, 80.0, 80.0, 35.0)
+
+        thresholds_context = f"\n\n[OPERATIONAL CRITICAL THRESHOLDS]\n- Max Temperature Limit: {temp_lim} °C\n- Max Noise Level Limit: {noise_lim} dB\n- Max Traffic Load Limit: {traffic_lim} %\n- Max PM2.5 Concentration Limit: {air_lim} µg/m³\n- Min Green-Space Soil Moisture Limit: {soil_lim} %"
+
         rendered_prompt = (
             prompt_template.replace("{{locatie}}", location)
             .replace("{{temperature}}", f"{temperature:.1f}")
@@ -130,6 +149,7 @@ class UrbanAiAssistantComponent:
             .replace("{{limba_activa}}", active_lang)
             .replace("{{jurnal_alerte_recente}}", historical_alerts_log)
         )
+        rendered_prompt = f"{rendered_prompt}{thresholds_context}"
 
         if st.button(
             translations.get("generate_rec", "Generate Recommendations"),
@@ -174,12 +194,7 @@ class UrbanAiAssistantComponent:
                 st.error(st.session_state[session_key])
             else:
                 with st.chat_message("assistant"):
-                    st.markdown(
-                        f"**{translations.get('ai_recommendation_label', 'Operational Recommendation (Cluj-Napoca):')}**\n\n"
-                        f"{st.session_state[session_key]}"
-                    )
-
-
+                    st.markdown(f"{st.session_state[session_key]}")
 class GlobalSidebarComponent:
     """Manages unified sidebar components including system operator profiles and localization controls."""
 
@@ -260,10 +275,20 @@ def render_ai_assistant(
     air_quality: float,
     soil_moisture: float,
     translations: dict[str, str],
+    noise_level: float = 0.0,
+    traffic_load: float = 0.0,
 ) -> None:
     """Legacy wrapper forwarding operational context cleanly into the structural assistant component class."""
     component = UrbanAiAssistantComponent()
-    component.render(location, temperature, air_quality, soil_moisture, translations)
+    component.render(
+        location=location,
+        temperature=temperature,
+        air_quality=air_quality,
+        soil_moisture=soil_moisture,
+        translations=translations,
+        noise_level=noise_level,
+        traffic_load=traffic_load,
+    )
 
 
 def render_full_global_sidebar(translations: dict[str, str]) -> str:
