@@ -606,13 +606,7 @@ Actions must be proportional to the status and available evidence.
 Do not invent infrastructure.
 
 **Data Limitations**
-
-Provide only the limitations that materially affect the assessment.
-
-If no important limitation exists, write:
-
-"No material data limitation identified."
-
+[Write here the material data limitations identified, or if no important limitation exists, write exactly: "No material data limitation identified."]
 
 ============================================================
 23. SECURITY NOTE
