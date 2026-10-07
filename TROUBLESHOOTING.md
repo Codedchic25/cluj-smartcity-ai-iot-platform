@@ -53,3 +53,10 @@ Acest document centralizează întrebările de arhitectură, deciziile inginerie
 ### Î8: De ce rulează instrucțiunea USER appuser spre finalul fișierului Dockerfile?
 * **Apărare**: În mod implicit, containerele Docker rulează procesele interne sub contul de administrator absolut (`root`), creând riscul de tip *Container Breakout* în cazul în care aplicația este compromisă.
 * **Justificare Tehnică**: Prin crearea unui utilizator dedicat sistemului (`appuser`) și delegarea permisiunilor de scriere pe directorul `/workspace`, ne asigurăm că aplicația operează sub principiul privilegiilor minime (*Principle of Least Privilege*). Serverul Streamlit rulează izolat, având exclusiv permisiunile necesare pentru a citi și scrie date în `app.db` și `security_alerts.log`, securizând total aplicația.
+
+### I19: De ce interfața din Streamlit Cloud afișa avertismente portocalii legate de lipsa senzorilor în schema relațională?
+* **Problemă:** La deployment-ul pe Streamlit Cloud, platforma returna erori de tipul `No sensors registered inside the local relational database ledger schema` și `Telemetry matrix logging channels returned empty record data blocks`.
+* **Cauza:** Fiind un mediu de rulare containerizat efemer, instanța din cloud pornea de fiecare dată cu o bază de date SQLite (`app.db`) complet nouă, goală și complet izolată de migrările sau populările executate manual în mediul local de dezvoltare.
+* **Justificare Tehnică & Rezolvare:** Pentru a asigura reziliența datelor fără intervenție manuală, s-au implementat două măsuri corelate:
+  1. S-a aliniat starea internă a versiunilor prin `alembic stamp 001`, blocând erorile DDL generate de duplicarea tabelelor la rularea primului pachet de migrare.
+  2. A fost integrat un mecanism de **Auto-Seeding programatic** direct în faza de bootstrap a aplicației (în metoda `initialize_database()` din `CityRepository`). Dacă interogarea bazei de date indică `0` senzori înregistrați, engine-ul invocă automat subprocesul `seed_db.py`, populând instantaneu platforma cu parametrii de bază din Cluj-Napoca.

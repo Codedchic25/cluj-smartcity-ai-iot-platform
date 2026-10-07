@@ -122,6 +122,24 @@ class CityRepository:
             )
             connection.commit()
 
+        # --- AUTO-SEEDING INCloud/PRODUCȚIE ---
+        # Verificăm dacă tabela de senzori este complet goală
+        try:
+            with self._connect() as connection:
+                cursor = connection.cursor()
+                cursor.execute("SELECT COUNT(*) FROM sensors;")
+                count = cursor.fetchone()[0]
+
+            if count == 0:
+                LOGGER.info("Baza de date este goală. Se inițiază secvența de seed automată...")
+                import subprocess
+                # Rulează scriptul de seed existent în rădăcina proiectului
+                subprocess.run([sys.executable, "seed_db.py"], check=True)
+                LOGGER.info("Secvența de seed s-a finalizat cu succes!")
+        except Exception as seed_err:
+            LOGGER.error(f"Eroare la auto-popularea bazei de date: {seed_err}")
+
+
     def get_alert_thresholds(self, sensor_id: int) -> AlertThresholds:
         """Extracts configuration parameter bounds registered for an active hardware deployment node."""
         with self._connect() as connection:
