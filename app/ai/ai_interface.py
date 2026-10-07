@@ -195,7 +195,6 @@ class UrbanAiAssistantComponent:
             else:
                 with st.chat_message("assistant"):
                     st.markdown(f"{st.session_state[session_key]}")
-
 class GlobalSidebarComponent:
     """Manages unified sidebar components including system operator profiles and localization controls."""
 
