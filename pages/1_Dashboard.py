@@ -279,10 +279,10 @@ class DashboardPage:
         st.divider()
         # ROW 4: Cognitive Cloud LLM AI Orchestration Core - Dashboard Implementation
         with st.expander(f"🧠 {provider.get('ai_assistant')}", expanded=True):
-            # Folosim direct funcția nativă definită în proiectul tău
             render_ai_assistant(
-                location=selected_sensor,
                 temperature=temp,
+                noise_level=noise,
+                traffic_load=traffic,
                 air_quality=air,
                 soil_moisture=soil,
                 translations=active_translations_dict,

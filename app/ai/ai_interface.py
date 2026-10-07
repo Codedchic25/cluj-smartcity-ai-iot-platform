@@ -103,11 +103,11 @@ class UrbanAiAssistantComponent:
         temperature: float,
         air_quality: float,
         soil_moisture: float,
+        noise_level: float,
+        traffic_load: float,
         translations: dict[str, str],
     ) -> None:
-        """Executes the state lifecycle rendering pipeline for the operator AI assistant interface."""
-        st.markdown("---")
-        st.subheader(f"🧠 {translations.get('ai_assistant', 'LLM Urban Assistant')}")
+        """Renders the AI assistant card with persistent state and dynamic prompt injection."""
 
         prompt_template = self._load_prompt_template()
         if not prompt_template:
@@ -125,6 +125,8 @@ class UrbanAiAssistantComponent:
             .replace("{{temperature}}", f"{temperature:.1f}")
             .replace("{{air_quality}}", f"{air_quality:.1f}")
             .replace("{{soil_moisture}}", f"{soil_moisture:.1f}")
+            .replace("{{noise_level}}", f"{noise_level:.1f}")
+            .replace("{{traffic_load}}", f"{traffic_load:.1f}")
             .replace("{{limba_activa}}", active_lang)
             .replace("{{jurnal_alerte_recente}}", historical_alerts_log)
         )

@@ -300,14 +300,20 @@ class AnalyticsPage:
         # ROW 4: Cognitive Cloud LLM AI Orchestration Core
         st.divider()
         with st.expander(f"🧠 {provider.get('ai_assistant')}", expanded=True):
-            # Extras direct din ultimul rând disponibil în setul de date curent
-            latest_telemetry_row = df_analytics.iloc[-1]
+            selected_zone = selected_sensor
+            current_temp = df_analytics["temperature"].iloc[-1]
+            current_aqi = df_analytics["air_quality"].iloc[-1]
+            current_soil = df_analytics["soil_moisture"].iloc[-1]
+            current_noise = df_analytics["noise_level"].iloc[-1]
+            current_traffic = df_analytics["traffic_load"].iloc[-1]
 
             render_ai_assistant(
-                location=selected_sensor,
-                temperature=float(latest_telemetry_row["temperature"]),
-                air_quality=float(latest_telemetry_row["air_quality"]),
-                soil_moisture=float(latest_telemetry_row["soil_moisture"]),
+                location=selected_zone,
+                temperature=current_temp,
+                air_quality=current_aqi,
+                soil_moisture=current_soil,
+                noise_level=current_noise,
+                traffic_load=current_traffic,
                 translations=active_translations_dict,
             )
 
