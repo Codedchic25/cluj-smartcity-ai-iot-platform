@@ -1,10 +1,9 @@
 # migrations/versions/5ae1c03dbd71_add_new_iot_column.py
-"""add_new_iot_column
+"""Add new iot column.
 
 Revision ID: 5ae1c03dbd71
 Revises: 001
 Create Date: 2026-08-25 12:54:24.228442
-
 """
 
 from __future__ import annotations

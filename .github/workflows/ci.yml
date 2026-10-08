@@ -22,12 +22,11 @@ jobs:
         uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
-
       - name: 📦 Sync Framework Dependencies
         run: uv sync --frozen --all-groups
 
-      - name: 🔎 Verify Pytest Installation
-        run: uv run pytest --version
+      - name: 🔎 Verify Automated Code Quality Compliance
+        run: uv run ruff check .
 
       - name: 🗄️ Provision Isolated Database Layer
         run: uv run python seed_db.py

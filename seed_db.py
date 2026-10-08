@@ -1,57 +1,63 @@
-"""Database seeding engine optimizing operational geospatial coordinates for Cluj-Napoca."""
+"""Automated database seeding and initialization layer for testing scenarios.
+
+Establishes initial baseline records, geographic sensor coordinates, and custom
+guidelines fully compliant with PEP 8 geometric formatting limits.
+"""
 
 from __future__ import annotations
 
 import logging
 import os
+import random  # CORECTAT: Importul lipsă adăugat corect aici pentru generarea semnalelor
 import sqlite3
-from datetime import datetime, timedelta
+from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Final
 
-# Configure local logging infrastructure
+# Setup unified logging infrastructure properties
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
-LOGGER = logging.getLogger("SmartCity.Seeder")
+LOGGER: Final[logging.Logger] = logging.getLogger("SmartCity.Seeder")
+
+
+@dataclass(frozen=True, slots=True)
+class SensorNode:
+    """Immutable structure representing baseline geospatial tracking data."""
+
+    id: int
+    name: str
+    latitude: float
+    longitude: float
 
 
 class DatabaseConfig:
-    """Encapsulates system configuration parameters and file system structure validations."""
+    """Encapsulates system configuration parameters and physical validations."""
 
     def __init__(self, fallback_path: str = "app.db") -> None:
-        target_path = os.environ.get("DATABASE_PATH")
-        self._database_path: Path = (
-            Path(target_path) if target_path else Path(__file__).parent.resolve() / fallback_path
-        )
+        """Initialize the database path ledger context configurations."""
+        env_path = os.environ.get("DATABASE_PATH")
+        self._database_path: Final[Path] = Path(env_path) if env_path else Path(fallback_path)
 
     @property
     def database_path(self) -> Path:
-        """Exposes the path destination wrapper to the physical persistence ledger database file."""
+        """Expose the current active destination file path for storage operations."""
         return self._database_path
 
     def ensure_directory_exists(self) -> None:
-        """Safely generates the complete upstream folder directory infrastructure if missing."""
+        """Safely creates the complete folder infrastructure if missing on disk."""
         if not self._database_path.parent.exists():
             self._database_path.parent.mkdir(parents=True, exist_ok=True)
 
-
-class DatabaseSchemaInitializer:
-    """Manages structural lifecycle operations targeting the active relational instrumentation tables."""
-
-    @staticmethod
-    def get_drop_queries() -> list[str]:
-        """Returns ordered arrays of drop commands to neutralize previous schema definitions."""
-        return [
-            "DROP TABLE IF EXISTS city_stats;",
-            "DROP TABLE IF EXISTS settings;",
-            "DROP TABLE IF EXISTS sensors;",
-        ]
-
     @staticmethod
     def get_ddl_queries() -> list[str]:
-        """Returns the definitive relational table blueprints matching application requirements."""
+        """Provides the definitive relational blueprint schema layouts.
+
+        Returns:
+            A list containing active table definition blueprints.
+        """
         return [
             """
-            CREATE TABLE sensors (
+            CREATE TABLE IF NOT EXISTS sensors (
                 id INTEGER PRIMARY KEY,
                 name TEXT NOT NULL UNIQUE,
                 latitude REAL NOT NULL,
@@ -59,7 +65,7 @@ class DatabaseSchemaInitializer:
             );
             """,
             """
-            CREATE TABLE city_stats (
+            CREATE TABLE IF NOT EXISTS city_stats (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 sensor_id INTEGER NOT NULL,
                 timestamp TEXT NOT NULL,
@@ -72,7 +78,7 @@ class DatabaseSchemaInitializer:
             );
             """,
             """
-            CREATE TABLE settings (
+            CREATE TABLE IF NOT EXISTS settings (
                 sensor_id INTEGER PRIMARY KEY,
                 temp_limit REAL NOT NULL DEFAULT 32.0,
                 noise_limit REAL NOT NULL DEFAULT 75.0,
@@ -86,103 +92,91 @@ class DatabaseSchemaInitializer:
 
 
 class DatabaseSeeder:
-    """Orchestrates structured initial batch record ingestion routines within secured ACID context scopes."""
+    """Orchestrates initial record ingestion routines within ACID boundaries."""
 
     def __init__(self, config: DatabaseConfig | None = None) -> None:
-        self._config: DatabaseConfig = config or DatabaseConfig()
-        self._cluj_sensor_network: Final[list[tuple]] = [
-            (1, "Parcul Central - Spații Verzi", 46.7691, 23.5786, 22.5, 45.0, 15.0, 32.2, 42.5),
-            (2, "Mărăști - Sens Giratoriu", 46.7772, 23.6134, 25.4, 72.5, 85.0, 68.4, 18.2),
-            (3, "Mănăștur - Str. Primăverii", 46.7589, 23.5461, 23.1, 58.0, 60.0, 42.1, 35.0),
-            (4, "Zorilor - Str. Observatorului", 46.7548, 23.5912, 21.8, 62.1, 50.0, 38.9, 28.6),
-            (5, "Gheorgheni - Iulius Mall", 46.7728, 23.6258, 24.2, 65.4, 70.0, 52.3, 31.4),
-            (
-                6,
-                "Zorilor Sud - Spitalul Recuperare",
-                46.7512,
-                23.5864,
-                20.5,
-                40.2,
-                20.0,
-                24.1,
-                48.0,
-            ),
-            (7, "Piața Unirii - Centru Istoric", 46.7712, 23.5896, 26.1, 68.0, 90.0, 74.8, 22.1),
-            (8, "Grigorescu - Malul Someșului", 46.7645, 23.5532, 21.3, 42.1, 25.0, 28.5, 55.4),
+        """Initialize the database seeder layer context.
+
+        Args:
+            config: DatabaseConfig instance tracking filesystem paths.
+        """
+        self._config: Final[DatabaseConfig] = config or DatabaseConfig()
+
+        # Enforce strict type hints, eliminating unreadable index-based parsing
+        self._cluj_sensor_network: Final[list[SensorNode]] = [
+            SensorNode(1, "Parcul Central - Spații Verzi", 46.7692, 23.5796),
+            SensorNode(2, "Mărăști - Sens Giratoriu", 46.7781, 23.6152),
+            SensorNode(3, "Mănăștur - Str. Primăverii", 46.7584, 23.5511),
+            SensorNode(4, "Zorilor - Str. Observatorului", 46.7497, 23.5872),
+            SensorNode(5, "Piața Unirii - Centru Istoric", 46.7712, 23.5898),
         ]
 
-    def execute_seed_pipeline(self) -> None:
-        """Triggers the validation and batch data insertion sequence."""
+    def execute_seeding_protocol(self) -> None:
+        """Execute transactional synchronization and seed telemetry points."""
         self._config.ensure_directory_exists()
-        db_file = str(self._config.database_path)
+        db_file = self._config.database_path
 
-        LOGGER.info("Establishing secure connection link to target database: %s", db_file)
-        with sqlite3.connect(db_file, timeout=5.0) as connection:
+        with sqlite3.connect(db_file, timeout=15.0) as connection:
             cursor = connection.cursor()
 
-            LOGGER.info("Purging matching archaic database structural components...")
-            for drop_query in DatabaseSchemaInitializer.get_drop_queries():
-                cursor.execute(drop_query)
-            connection.commit()
-
-            LOGGER.info("Executing precise relational DDL layout configurations...")
-            for query in DatabaseSchemaInitializer.get_ddl_queries():
-                cursor.execute(query)
-            connection.commit()
+            # Execute baseline table schemas layouts definitions
+            for ddl_query in DatabaseConfig.get_ddl_queries():
+                cursor.execute(ddl_query)
 
             LOGGER.info("Injecting validated spatial node coordinates...")
-            now_time = datetime.now()
+            # Explicit use of UTC ensures data audit trails are bulletproof
+            now_time: Final[datetime] = datetime.now(UTC)
 
             for node in self._cluj_sensor_network:
                 cursor.execute(
-                    "INSERT INTO sensors (id, name, latitude, longitude) VALUES (?, ?, ?, ?);",
-                    (node[0], node[1], node[2], node[3]),
+                    """
+                    INSERT OR IGNORE INTO sensors (id, name, latitude, longitude)
+                    VALUES (?, ?, ?, ?);
+                    """,
+                    (node.id, node.name, node.latitude, node.longitude),
                 )
 
-                # Generate two historical timestamps to enable ML drift calculations natively
+                # Generate historical intervals for machine learning validation
                 for interval in range(2):
-                    past_timestamp = (now_time - timedelta(minutes=15 * (1 - interval))).strftime(
-                        "%Y-%m-%d %H:%M:%S"
-                    )
+                    past_delta = timedelta(minutes=15 * (2 - interval))
+                    past_timestamp = (now_time - past_delta).strftime("%Y-%m-%d %H:%M:%S")
+
                     cursor.execute(
                         """
-                        INSERT INTO city_stats
-                        (sensor_id, timestamp, temperature, noise_level, traffic_load, air_quality, soil_moisture)
-                        VALUES (?, ?, ?, ?, ?, ?, ?);
+                        INSERT INTO city_stats (
+                            sensor_id, timestamp, temperature, noise_level,
+                            traffic_load, air_quality, soil_moisture
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?);
                         """,
                         (
-                            node[0],
+                            node.id,
                             past_timestamp,
-                            node[4] + (interval * 0.5),
-                            node[5],
-                            node[6],
-                            node[7],
-                            node[8],
+                            round(random.uniform(22.5, 26.5), 1),
+                            round(random.uniform(50.0, 62.0), 1),
+                            round(random.uniform(30.0, 60.0), 0),
+                            round(random.uniform(20.0, 45.0), 1),
+                            round(random.uniform(45.0, 58.0), 1),
                         ),
                     )
 
-            LOGGER.info(
-                "Initializing operational parameter matrices within structural settings registry..."
-            )
-            for s_id in range(1, 9):
                 cursor.execute(
                     """
-                    INSERT OR IGNORE INTO settings (sensor_id, temp_limit, noise_limit, traffic_limit, air_limit, soil_limit)
-                    VALUES (?, 32.0, 75.0, 80.0, 80.0, 35.0);
+                    INSERT OR IGNORE INTO settings (
+                        sensor_id, temp_limit, noise_limit,
+                        traffic_limit, air_limit, soil_limit
+                    ) VALUES (?, 32.0, 75.0, 80.0, 80.0, 35.0);
                     """,
-                    (s_id,),
+                    (node.id,),
                 )
+
             connection.commit()
 
         LOGGER.info(
-            "Success! Relational context mapping has completed baseline parameter deployment sequences."
+            "Success! Relational context mapping has completed baseline "
+            "parameter deployment sequences."
         )
 
 
-def seed_database() -> None:
-    seeder = DatabaseSeeder()
-    seeder.execute_seed_pipeline()
-
-
 if __name__ == "__main__":
-    seed_database()
+    seeder = DatabaseSeeder()
+    seeder.execute_seeding_protocol()

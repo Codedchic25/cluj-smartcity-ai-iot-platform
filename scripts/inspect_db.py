@@ -1,24 +1,40 @@
-"""Utility script to inspect and validate the Smart City Cluj-Napoca database."""
+"""Database Diagnostic and Inspection Utility for the Cluj-Napoca Smart City Platform."""
 
 from __future__ import annotations
 
 import os
 import sqlite3
 from pathlib import Path
+from typing import Final
 
-DATABASE_PATH = Path(os.getenv("DATABASE_PATH", "app.db"))
 
+class DatabaseInspector:
+    """Provides read-only diagnostic assertions against the active SQLite engine."""
 
-def inspect_database() -> None:
-    """Inspect SQLite tables, thresholds, sensors, and latest telemetry records safely."""
-    print("🔍 [DATABASE INSPECTOR] Starting database inspection...")
+    def __init__(self) -> None:
+        """Initializes the inspector, resolving database endpoints."""
+        db_env = os.getenv("DATABASE_PATH", "app.db")
+        self._database_path: Final[Path] = Path(db_env)
 
-    if not DATABASE_PATH.exists():
-        print(f"❌ Database file not found: '{DATABASE_PATH.resolve()}'. Run 'setup_db.py' first.")
-        return
+    @property
+    def database_path(self) -> Path:
+        """Exposes the internal resolved tracking path of the database file."""
+        return self._database_path
 
-    try:
-        with sqlite3.connect(DATABASE_PATH, timeout=10) as connection:
+    def _establish_connection(self) -> sqlite3.Connection:
+        """Creates an isolated connection instance wrapped with timeouts."""
+        if not self._database_path.exists():
+            raise FileNotFoundError(
+                f"Database file not found at path: '{self._database_path.resolve()}'."
+            )
+        return sqlite3.connect(self._database_path, timeout=10.0)
+
+    def print_structural_overview(self) -> list[str]:
+        """Audits the internal SQLite master catalogue to identify tables."""
+        print("🔍 [DATABASE INSPECTOR] Commencing database structural validation...")
+
+        with self._establish_connection() as connection:
+            connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
 
             cursor.execute(
@@ -27,111 +43,141 @@ def inspect_database() -> None:
                 FROM sqlite_master
                 WHERE type = 'table'
                   AND name NOT LIKE 'sqlite_%'
-                ORDER BY name
+                ORDER BY name;
                 """
             )
-
-            tables = [row[0] for row in cursor.fetchall()]
+            tables: list[str] = [row["name"] for row in cursor.fetchall()]
 
             if not tables:
-                print("⚠️ Database contains no application tables.")
-                return
+                print("⚠️ Database operational context contains no defined schema tables.")
+                return []
 
-            print(f"📊 Detected {len(tables)} application tables:")
-
+            print(f"📊 Discovered {len(tables)} active application table boundaries:")
             for table_name in tables:
-                cursor.execute(f'SELECT COUNT(*) FROM "{table_name}"')
-                count = cursor.fetchone()[0]
-                print(f"   └── 📋 {table_name:<15} | Records: {count}")
+                cursor.execute(f'SELECT COUNT(*) as total_rows FROM "{table_name}"')
+                count: int = cursor.fetchone()["total_rows"]
+                print(f"   └── 📋 {table_name:<15} | Current Ingested Records: {count}")
 
-            print("\n⚙️ [THRESHOLD VALIDATION] Active safety thresholds:")
+            return tables
+
+    def validate_safety_thresholds(self) -> None:
+        """Extracts and formats operational system control matrix settings."""
+        print("\n⚙️ [THRESHOLD VALIDATION] Querying active safety control matrices:")
+
+        with self._establish_connection() as connection:
+            connection.row_factory = sqlite3.Row
+            cursor = connection.cursor()
 
             cursor.execute(
                 """
-                SELECT id, temp_limit, noise_limit, air_limit, soil_limit
+                SELECT sensor_id, temp_limit, noise_limit, air_limit, soil_limit
                 FROM settings
-                WHERE id = 1
+                WHERE sensor_id = 1;
                 """
             )
-
-            settings = cursor.fetchone()
+            settings: sqlite3.Row | None = cursor.fetchone()
 
             if settings:
-                setting_id, temperature_limit, noise_limit, air_limit, soil_limit = settings
-                print(f"   ├── ID: {setting_id}")
-                print(f"   ├── Temperature: {temperature_limit} °C")
-                print(f"   ├── Noise: {noise_limit} dB")
-                print(f"   ├── Air quality: {air_limit}")
-                print(f"   └── Soil moisture: {soil_limit} %")
+                print(f"   ├── Sensor Bound ID: {settings['sensor_id']}")
+                print(f"   ├── Temperature Threshold: {settings['temp_limit']} °C")
+                print(f"   ├── Ambient Noise Level: {settings['noise_limit']} dB")
+                print(f"   ├── Air Quality Factor: {settings['air_limit']}")
+                print(f"   └── Soil Moisture Constraint: {settings['soil_limit']}%")
             else:
-                print("   ⚠️ No safety thresholds configured with ID = 1.")
+                print("   ⚠️ No operational baseline settings resolved matching ID = 1.")
 
-            print("\n📡 [SENSOR VALIDATION] Registered sensors:")
+    def audit_registered_sensors(self) -> None:
+        """Iterates over the geospatial mapping registry to inspect live nodes."""
+        print("\n📡 [SENSOR VALIDATION] Querying registered spatial nodes directory:")
+
+        with self._establish_connection() as connection:
+            connection.row_factory = sqlite3.Row
+            cursor = connection.cursor()
 
             cursor.execute(
                 """
                 SELECT id, name, latitude, longitude
                 FROM sensors
-                ORDER BY id
+                ORDER BY id;
                 """
             )
-
-            sensors = cursor.fetchall()
+            sensors: list[sqlite3.Row] = cursor.fetchall()
 
             if sensors:
-                for sensor_id, name, latitude, longitude in sensors:
-                    lat_str = f"{latitude:.4f}" if latitude is not None else "N/A"
-                    lon_str = f"{longitude:.4f}" if longitude is not None else "N/A"
-                    print(f"   ├── #{sensor_id} {name} | Lat: {lat_str} | Lon: {lon_str}")
+                for row in sensors:
+                    lat_val: float | None = row["latitude"]
+                    lon_val: float | None = row["longitude"]
+                    lat_str: str = f"{lat_val:.4f}" if lat_val is not None else "N/A"
+                    lon_str: str = f"{lon_val:.4f}" if lon_val is not None else "N/A"
+                    print(f"   ├── #{row['id']} {row['name']} | Lat: {lat_str} | Lon: {lon_str}")
             else:
-                print("   ⚠️ No sensors registered.")
+                print("   ⚠️ Zero urban sensor nodes discovered inside registries.")
 
-            print("\n📡 [TELEMETRY] Latest 3 records:")
+    def trace_latest_telemetry(self) -> None:
+        """Profiles the latest operational high-frequency telemetry metrics."""
+        print("\n📡 [TELEMETRY] Profiling latest 3 streaming records:")
+
+        with self._establish_connection() as connection:
+            connection.row_factory = sqlite3.Row
+            cursor = connection.cursor()
 
             cursor.execute(
                 """
                 SELECT
                     c.timestamp,
-                    s.name,
+                    s.name AS sensor_name,
                     c.temperature,
                     c.noise_level,
                     c.traffic_load,
                     c.air_quality,
                     c.soil_moisture
                 FROM city_stats AS c
-                LEFT JOIN sensors AS s
-                    ON c.sensor_id = s.id
+                LEFT JOIN sensors AS s ON c.sensor_id = s.id
                 ORDER BY c.timestamp DESC
-                LIMIT 3
+                LIMIT 3;
                 """
             )
-
-            records = cursor.fetchall()
+            records: list[sqlite3.Row] = cursor.fetchall()
 
             if records:
-                for record in records:
-                    timestamp, sensor_name, temp, noise, traffic, air, soil = record
+                for row in records:
+                    t_load: float | None = row["traffic_load"]
+                    temp: float | None = row["temperature"]
+                    noise: float | None = row["noise_level"]
+                    air: float | None = row["air_quality"]
+                    soil: float | None = row["soil_moisture"]
 
-                    temp_str = f"{temp:.1f} °C" if temp is not None else "N/A"
-                    noise_str = f"{noise:.1f} dB" if noise is not None else "N/A"
-                    traffic_str = f"{traffic}%" if traffic is not None else "N/A"
-                    air_str = f"{air:.1f}" if air is not None else "N/A"
-                    soil_str = f"{soil:.1f}%" if soil is not None else "N/A"
+                    temp_str: str = f"{temp:.1f} °C" if temp is not None else "N/A"
+                    noise_str: str = f"{noise:.1f} dB" if noise is not None else "N/A"
+                    traffic_str: str = f"{t_load:.1f}%" if t_load is not None else "N/A"
+                    air_str: str = f"{air:.1f}" if air is not None else "N/A"
+                    soil_str: str = f"{soil:.1f}%" if soil is not None else "N/A"
 
                     print(
-                        f"   ├── [{timestamp}] {sensor_name or 'Unknown sensor'} | "
+                        f"   ├── [{row['timestamp']}] {row['sensor_name'] or 'Unknown Node'} | "
                         f"{temp_str} | {noise_str} | Traffic: {traffic_str} | "
                         f"Air: {air_str} | Soil: {soil_str}"
                     )
             else:
-                print("   ℹ️ No telemetry records found in 'city_stats'. Start the IoT producer.")
+                print("   ℹ️ Operational stats ledger 'city_stats' is currently empty.")
 
-            print("\n✅ Database inspection completed successfully.")
 
+def run_diagnostics_pipeline() -> None:
+    """Orchestrates the standalone execution sequencing for database diagnostics."""
+    inspector = DatabaseInspector()
+    try:
+        active_tables: list[str] = inspector.print_structural_overview()
+        if active_tables:
+            inspector.validate_safety_thresholds()
+            inspector.audit_registered_sensors()
+            inspector.trace_latest_telemetry()
+        print("\n✅ Verification engine lifecycle executed without errors.")
+    except FileNotFoundError as exc:
+        print(f"\n❌ Pre-execution validation fault: {exc}")
     except (sqlite3.Error, ValueError) as exc:
-        print(f"❌ Database inspection failed: {exc}")
+        print(f"\n❌ Diagnostics aborted due to runtime engine failure: {exc}")
         raise
 
 
 if __name__ == "__main__":
-    inspect_database()
+    run_diagnostics_pipeline()

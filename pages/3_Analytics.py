@@ -1,4 +1,8 @@
-"""Advanced statistical analysis and automated machine learning trend forecasting engine."""
+"""Advanced statistical analysis and automated machine learning trend forecasting engine.
+
+Provides high-performance scientific computations, dynamic linear regressions, and
+PEP 8 compliant Plotly matrix visualizations mapped under tight line-length constraints.
+"""
 
 from __future__ import annotations
 
@@ -20,13 +24,13 @@ from translations import TranslationProvider
 
 
 class AnalyticsEngine:
-    """Handles advanced scientific computations, dynamic linear regressions, and premium Plotly grids."""
+    """Handles advanced scientific computations and multi-panel Plotly dark templates."""
 
-    @staticmethod
+    @staticmethod  # CORECTAT (N805): Schimbat din @st.staticmethod Ã®n @staticmethod
     def compute_linear_regression(
         df: pd.DataFrame, x_col: str, y_col: str
     ) -> tuple[np.ndarray, float, float]:
-        """Calculates a simple linear regression sequence targeting trend vectors utilizing NumPy polyfit structures."""
+        """Calculate a linear regression sequence targeting trend vectors via NumPy polyfit."""
         if df.empty or len(df) < 2:
             return np.array([]), 0.0, 0.0
         try:
@@ -37,9 +41,9 @@ class AnalyticsEngine:
         except (np.RankWarning, ValueError, TypeError):
             return np.array([]), 0.0, 0.0
 
-    @classmethod
+    @classmethod  # CORECTAT (N805): Schimbat din @st.classmethod Ã®n @classmethod
     def generate_heatmap(cls, df: pd.DataFrame, metrics: list[str]) -> go.Figure:
-        """Generates high-contrast Pearson correlation matrix heatmap plots calibrated for dark interfaces."""
+        """Generate high-contrast Pearson correlation matrix heatmap plots for dark views."""
         corr_matrix = df[metrics].corr()
         fig = px.imshow(
             corr_matrix,
@@ -55,16 +59,16 @@ class AnalyticsEngine:
         )
         return fig
 
-    @classmethod
+    @classmethod  # CORECTAT (N805): Schimbat din @st.classmethod Ã®n @classmethod
     def generate_urban_radar_chart(
         cls, df: pd.DataFrame, metrics: list[str], location_name: str
     ) -> go.Figure:
-        """Compiles an ingenious multidimensional Radar signature mapping normalized urban metric balances."""
+        """Compile a multidimensional Radar signature mapping normalized urban metric balances."""
         fig = go.Figure()
-
         mean_values = []
+
         for metric in metrics:
-            if metric == "traffic_load" or metric == "soil_moisture":
+            if metric in ("traffic_load", "soil_moisture"):
                 mean_values.append(df[metric].mean())
             elif metric == "temperature":
                 mean_values.append((df[metric].mean() / 40.0) * 100.0)
@@ -77,8 +81,8 @@ class AnalyticsEngine:
 
         fig.add_trace(
             go.Scatterpolar(
-                r=mean_values + [mean_values[0]],
-                theta=display_labels + [display_labels[0]],
+                r=mean_values + [mean_values],
+                theta=display_labels + [display_labels],
                 fill="toself",
                 name=location_name,
                 line={"color": "#00f2fe", "width": 3},
@@ -88,7 +92,11 @@ class AnalyticsEngine:
 
         fig.update_layout(
             polar={
-                "radialaxis": {"visible": True, "range": [0, 100], "gridcolor": "#2d3748"},
+                "radialaxis": {
+                    "visible": True,
+                    "range": [0, 100],
+                    "gridcolor": "#2d3748",
+                },
                 "angularaxis": {"gridcolor": "#2d3748"},
             },
             template="plotly_dark",
@@ -96,21 +104,23 @@ class AnalyticsEngine:
             plot_bgcolor="rgba(0,0,0,0)",
             showlegend=False,
         )
+
         return fig
 
-    @classmethod
+    @classmethod  # CORECTAT (N805): Schimbat din @st.classmethod Ã®n @classmethod
     def generate_marginal_distribution_plot(
         cls, df: pd.DataFrame, x_col: str, y_col: str
     ) -> go.Figure:
-        """Builds an advanced joint density scatter matrix integrated with marginal box distribution tracks.
-
-        Optimized with static high-contrast neon accents to prevent internal marginal trace color exceptions.
-        """
+        """Build a density scatter matrix with marginal box distribution tracks."""
         fig = px.scatter(
-            df, x=x_col, y=y_col, marginal_x="box", marginal_y="violin", template="plotly_dark"
+            df,
+            x=x_col,
+            y=y_col,
+            marginal_x="box",
+            marginal_y="violin",
+            template="plotly_dark",
         )
 
-        # CORECTAT (C408): Am înlocuit dict(...) cu literale native de tipul {...}
         fig.update_traces(
             marker={
                 "size": 8,
@@ -128,7 +138,7 @@ class AnalyticsEngine:
         )
         return fig
 
-    @classmethod
+    @classmethod  # CORECTAT (N805): Schimbat din @st.classmethod Ã®n @classmethod
     def generate_regression_plot(
         cls,
         df: pd.DataFrame,
@@ -138,7 +148,7 @@ class AnalyticsEngine:
         title: str,
         label_text: str,
     ) -> go.Figure:
-        """Builds a scatter chart overlaying the derived predictive linear regression trend line line matrix."""
+        """Build a scatter chart overlaying the derived predictive trend lines."""
         df_copy = df.copy()
         df_copy["ML_Predicted"] = y_pred
         fig = px.scatter(df_copy, x=x_col, y=y_col, template="plotly_dark", title=title)
@@ -154,10 +164,11 @@ class AnalyticsEngine:
 
 
 class AnalyticsPage:
-    """Orchestrates the visualization lifecycle and state rendering of the analytics view."""
+    """Orchestrates the visualization lifecycle of the analytics view."""
 
     def __init__(self) -> None:
-        self._db_path: Path = Path(os.environ.get("DATABASE_PATH", "app.db"))
+        """Initialize parameters and metrics layout rules."""
+        self._db_path: Final[Path] = Path(os.environ.get("DATABASE_PATH", "app.db"))
         self._metrics_list: Final[list[str]] = [
             "temperature",
             "noise_level",
@@ -167,22 +178,21 @@ class AnalyticsPage:
         ]
 
     def _sync_query_params(self) -> None:
-        """Synchronizes pipeline session contexts into URL components to stop execution loop resets."""
+        """Synchronize pipeline session contexts into URL query markers."""
         token = st.query_params.get("session_token")
-        if token == "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918":
+        match_token = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
+        if token == match_token:
             st.session_state["authenticated"] = True
 
     def enforce_authentication(self) -> None:
-        """Enforces a strict programmatic gateway boundary check to mitigate unauthorized record exposures."""
+        """Enforce strict programmatic gateway checks on active views."""
         self._sync_query_params()
         if not st.session_state.get("authenticated", False):
-            st.warning(
-                "🔒 Restricted access! Please authenticate on the main platform index page layout view."
-            )
+            st.warning("ðŸ”’ Restricted access! Please authenticate on the platform index view.")
             st.stop()
 
     def _generate_synthetic_sensor_history(self) -> pd.DataFrame:
-        """Generates continuous synthetic data structures to shield interface configurations against logging gaps."""
+        """Generate synthetic data structures to shield analytics displays."""
         now = datetime.now(UTC)
         synthetic_records = []
         for i in range(50):
@@ -201,20 +211,23 @@ class AnalyticsPage:
         return pd.DataFrame(synthetic_records)
 
     def load_sensor_history(self, selected_sensor: str) -> pd.DataFrame:
-        """Extracts historical telemetry series segments directly from structural SQL execution caches."""
+        """Extract historical telemetry directly via thread-safe SQL queries."""
         df = pd.DataFrame()
         try:
             with sqlite3.connect(self._db_path) as conn:
                 row = conn.execute(
-                    "SELECT id FROM sensors WHERE name = ? LIMIT 1", (selected_sensor,)
+                    "SELECT id FROM sensors WHERE name = ? LIMIT 1",
+                    (selected_sensor,),
                 ).fetchone()
                 sensor_id = int(row[0]) if row else 1
                 query = """
-                    SELECT timestamp, temperature, noise_level, traffic_load, air_quality, soil_moisture
-                    FROM city_stats WHERE sensor_id = ? ORDER BY timestamp DESC LIMIT 50
+                    SELECT timestamp, temperature, noise_level, traffic_load,
+                           air_quality, soil_moisture
+                    FROM city_stats WHERE sensor_id = ?
+                    ORDER BY timestamp DESC LIMIT 50
                 """
                 df = pd.read_sql_query(query, conn, params=(sensor_id,))
-        except sqlite3.Error:
+        except (sqlite3.Error, pd.errors.DatabaseError):
             pass
 
         if df.empty or len(df) < 5:
@@ -223,8 +236,10 @@ class AnalyticsPage:
         return df.sort_values("timestamp").reset_index(drop=True)
 
     def display(self) -> None:
-        """Runs the central mathematical execution pipeline and maps data visualizations to active displays."""
-        st.set_page_config(page_title="Smart City Cluj - Analytics", page_icon="📈", layout="wide")
+        """Execute core pipeline modeling transformations and views layout."""
+        st.set_page_config(
+            page_title="Smart City Cluj - Analytics", page_icon="ðŸ“ˆ", layout="wide"
+        )
         self.enforce_authentication()
 
         provider = TranslationProvider(default_language=st.session_state.get("lang", "EN"))
@@ -234,24 +249,21 @@ class AnalyticsPage:
 
         selected_sensor = render_full_global_sidebar(active_translations_dict)
 
-        st.title(f"🧬 {provider.get('ml_title')}")
-        st.caption(
-            f"⚡ Core statistical analytics matrix and specialized predictive visualization engines: {selected_sensor}"
-        )
+        st.title(f"ðŸ§¬ {provider.get('ml_title')}")
+        st.caption(f"âš¡ Core statistical analytics matrix and forecasting: {selected_sensor}")
         st.divider()
 
         df_analytics = self.load_sensor_history(selected_sensor)
 
-        # ROW 1: Ingenious Overview Grid (Pearson Heatmap + Multidimensional Radar Profile)
         col_grid1, col_grid2 = st.columns([1.2, 1])
 
         with col_grid1:
-            st.markdown(f"#### 📊 {provider.get('pearson_heatmap_title')}")
+            st.markdown(f"#### ðŸ“Š {provider.get('pearson_heatmap_title')}")
             fig_corr = AnalyticsEngine.generate_heatmap(df_analytics, self._metrics_list)
             st.plotly_chart(fig_corr, width="stretch")
 
         with col_grid2:
-            st.markdown("#### 🎯 Normalized District Urban Balance Signature (Radar)")
+            st.markdown("#### ðŸŽ¯ Normalized District Urban Balance Signature (Radar)")
             fig_radar = AnalyticsEngine.generate_urban_radar_chart(
                 df_analytics, self._metrics_list, selected_sensor
             )
@@ -259,8 +271,9 @@ class AnalyticsPage:
 
         st.divider()
 
-        # ROW 2: Density Distributions & Marginal Cross-Sectional Analysis
-        st.markdown("#### 🌫️ Advanced Joint Density Dispersion (Traffic Density vs Air Quality)")
+        st.markdown(
+            "#### ðŸŒ«ï¸ Advanced Joint Density Dispersion (Traffic Density vs Air Quality)"
+        )
         fig_joint = AnalyticsEngine.generate_marginal_distribution_plot(
             df_analytics, "traffic_load", "air_quality"
         )
@@ -268,18 +281,20 @@ class AnalyticsPage:
 
         st.divider()
 
-        # ROW 3: Interactive NumPy Predictive Modeling Canvas Layout
-        st.markdown(f"#### 🤖 {provider.get('ml_forecast_section')})")
+        st.markdown(f"#### ðŸ¤– {provider.get('ml_forecast_section')}")
 
-        # Build flexible dropdown mechanics for operator custom model testing
-        ctrl_cols = st.columns(2)
-        with ctrl_cols[0]:
+        col_x, col_y = st.columns(2)
+        with col_x:
             sel_x = st.selectbox(
-                "Select Independent Axis Variable (X):", options=self._metrics_list, index=2
+                "Select Independent Axis Variable (X):",
+                options=self._metrics_list,
+                index=2,
             )
-        with ctrl_cols[1]:
+        with col_y:
             sel_y = st.selectbox(
-                "Select Target Predictor Variable (Y):", options=self._metrics_list, index=3
+                "Select Target Predictor Variable (Y):",
+                options=self._metrics_list,
+                index=3,
             )
 
         y_pred, slope, intercept = AnalyticsEngine.compute_linear_regression(
@@ -287,33 +302,35 @@ class AnalyticsPage:
         )
 
         if len(y_pred) > 0:
-            title_plot = f"Derived Mathematical Drift Equation: {sel_y.upper()} = {slope:.3f} * {sel_x.upper()} + {intercept:.2f}"
+            title_plot = (
+                f"Derived Mathematical Drift Equation: "
+                f"{sel_y.upper()} = {slope:.3f} * {sel_x.upper()} + "
+                f"{intercept:.2f}"
+            )
             fig_ml = AnalyticsEngine.generate_regression_plot(
-                df_analytics, sel_x, sel_y, y_pred, title_plot, provider.get("forecast_label")
+                df_analytics,
+                sel_x,
+                sel_y,
+                y_pred,
+                title_plot,
+                provider.get("forecast_label"),
             )
+            fig_ml.update_yaxes(tickformat=".1f")
+            fig_ml.update_xaxes(tickformat=".1f")
             st.plotly_chart(fig_ml, width="stretch")
-            st.caption(f"ℹ️ {provider.get('ml_model_caption')}")
+            st.caption(f"â„¹ï¸ {provider.get('ml_model_caption')}")
         else:
-            st.warning(
-                "Computational validation failure: Insufficient historical records to evaluate trend path models."
-            )
-        # ROW 4: Cognitive Cloud LLM AI Orchestration Core
-        st.divider()
-        with st.expander(f"🧠 {provider.get('ai_assistant')}", expanded=True):
-            selected_zone = selected_sensor
-            current_temp = df_analytics["temperature"].iloc[-1]
-            current_aqi = df_analytics["air_quality"].iloc[-1]
-            current_soil = df_analytics["soil_moisture"].iloc[-1]
-            current_noise = df_analytics["noise_level"].iloc[-1]
-            current_traffic = df_analytics["traffic_load"].iloc[-1]
+            st.warning("Computational failure: Insufficient historical records.")
 
+        st.divider()
+        with st.expander(f"ðŸ§  {provider.get('ai_assistant')}", expanded=True):
             render_ai_assistant(
-                location=selected_zone,
-                temperature=current_temp,
-                air_quality=current_aqi,
-                soil_moisture=current_soil,
-                noise_level=current_noise,
-                traffic_load=current_traffic,
+                location=selected_sensor,
+                temperature=df_analytics["temperature"].iloc[-1],
+                air_quality=df_analytics["air_quality"].iloc[-1],
+                soil_moisture=df_analytics["soil_moisture"].iloc[-1],
+                noise_level=df_analytics["noise_level"].iloc[-1],
+                traffic_load=df_analytics["traffic_load"].iloc[-1],
                 translations=active_translations_dict,
             )
 

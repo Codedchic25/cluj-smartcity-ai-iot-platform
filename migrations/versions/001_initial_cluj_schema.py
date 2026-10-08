@@ -1,4 +1,3 @@
-# migrations/versions/001_initial_cluj_schema.py
 """Initial Smart City Cluj database schema."""
 
 from __future__ import annotations
@@ -13,8 +12,10 @@ depends_on = None
 
 
 def upgrade() -> None:
-    """Create the initial Smart City Cluj database schema matching the object-relational mapping specs."""
+    """Create the initial Smart City Cluj database schema.
 
+    Matches the object-relational mapping specs.
+    """
     # ------------------------------------------------------------------
     # Sensors
     # ------------------------------------------------------------------

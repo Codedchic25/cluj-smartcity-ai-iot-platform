@@ -8,23 +8,24 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from typing import Final
 
-from sqlalchemy import text
+from sqlalchemy import Row, text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 # Initialize logger for the enterprise data management context
-LOGGER = logging.getLogger("SmartCity.Database")
+LOGGER: Final[logging.Logger] = logging.getLogger("SmartCity.Database")
 
 # -------------------------------------------------------------------------
-# DATABASE CONFIGURATION LAYER (HYBRID ENGINE: CLOUD POSTGRESQL / LOCAL SQLITE)
+# DATABASE CONFIGURATION LAYER (HYBRID ENGINE CONFIGURATION)
 # -------------------------------------------------------------------------
 
-DATABASE_URL_ENV = os.getenv("DATABASE_URL")
+DATABASE_URL_ENV: str | None = os.getenv("DATABASE_URL")
 
 if DATABASE_URL_ENV:
     # Adapt classical connection protocol strings to asyncpg-compliant structures
     if DATABASE_URL_ENV.startswith("postgresql://"):
-        ASYNC_DATABASE_URL = DATABASE_URL_ENV.replace("postgresql://", "postgresql+asyncpg://")
+        ASYNC_DATABASE_URL: str = DATABASE_URL_ENV.replace("postgresql://", "postgresql+asyncpg://")
     else:
         ASYNC_DATABASE_URL = DATABASE_URL_ENV
 
@@ -34,8 +35,8 @@ if DATABASE_URL_ENV:
     )
 else:
     # Resilient path resolution framework adapting across cross-platform environments
-    BASE_DIR = Path(__file__).resolve().parent.parent.parent
-    DATABASE_PATH = BASE_DIR / "app.db"
+    BASE_DIR: Final[Path] = Path(__file__).resolve().parent.parent.parent
+    DATABASE_PATH: Final[Path] = BASE_DIR / "app.db"
     ASYNC_DATABASE_URL = f"sqlite+aiosqlite:///{DATABASE_PATH}"
 
     # Isolated single-thread architecture flags for SQLite local storage engine
@@ -46,7 +47,7 @@ else:
     )
 
 # Unified asynchronous session factory configuration blueprint
-async_session_factory = async_sessionmaker(
+async_session_factory: Final[async_sessionmaker[AsyncSession]] = async_sessionmaker(
     bind=async_engine,
     class_=AsyncSession,
     expire_on_commit=False,
@@ -59,7 +60,7 @@ async_session_factory = async_sessionmaker(
 
 @asynccontextmanager
 async def get_async_db_session() -> AsyncGenerator[AsyncSession, None]:
-    """Asynchronous enterprise context manager guaranteeing discrete database connection release cycles."""
+    """Asynchronous enterprise context manager guaranteeing database connection release."""
     session: AsyncSession = async_session_factory()
     try:
         yield session
@@ -68,17 +69,24 @@ async def get_async_db_session() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def get_alert_thresholds_async() -> tuple[float, float, float, float]:
-    """Retrieves active system safety thresholds from the persistent schema settings ledger layer."""
-    query = "SELECT temp_limit, noise_limit, air_limit, soil_limit FROM settings WHERE id = 1"
+    """Retrieves active system safety thresholds from the settings layer."""
+    query = text(
+        "SELECT temp_limit, noise_limit, air_limit, soil_limit FROM settings WHERE sensor_id = 1;"
+    )
     try:
         async with get_async_db_session() as session:
-            result = await session.execute(text(query))
-            row = result.fetchone()
-            if row:
-                return (float(row[0]), float(row[1]), float(row[2]), float(row[3]))
+            result = await session.execute(query)
+            row: Row | None = result.fetchone()
+            if row is not None:
+                return (
+                    float(row.temp_limit),
+                    float(row.noise_limit),
+                    float(row.air_limit),
+                    float(row.soil_limit),
+                )
     except Exception as exc:
         LOGGER.warning(
-            "Database setting resolution fault. Reverting execution runtime context to system defaults: %s",
+            "Database setting resolution fault. Reverting context to system defaults: %s",
             exc,
         )
 
@@ -87,15 +95,14 @@ async def get_alert_thresholds_async() -> tuple[float, float, float, float]:
 
 
 async def cleanup_old_data(hours: int = 24) -> None:
-    """Enterprise-grade asynchronous maintenance execution loop to purge stale metrics beyond specified thresholds."""
-    limit_time = datetime.now(UTC) - timedelta(hours=hours)
-    limit_time_str = limit_time.strftime("%Y-%m-%d %H:%M:%S")
+    """Asynchronous maintenance execution loop to purge stale metrics."""
+    limit_time: datetime = datetime.now(UTC) - timedelta(hours=hours)
 
     async with get_async_db_session() as session:
         try:
             await session.execute(
-                text("DELETE FROM city_stats WHERE timestamp < :limit_time"),
-                {"limit_time": limit_time_str},
+                text("DELETE FROM city_stats WHERE timestamp < :limit_time;"),
+                {"limit_time": limit_time},
             )
             await session.commit()
             LOGGER.info(
@@ -105,6 +112,6 @@ async def cleanup_old_data(hours: int = 24) -> None:
         except Exception as exc:
             await session.rollback()
             LOGGER.error(
-                "Database structural cleanup procedure rolled back due to execution failure: %s",
+                "Database structural cleanup procedure rolled back due to failure: %s",
                 exc,
             )

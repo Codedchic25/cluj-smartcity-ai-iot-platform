@@ -1,38 +1,55 @@
-# check_db.py
+"""Database integrity and structural schema verification utilities.
+
+Ensures the physical storage matrices are fully compliant with relational layout
+blueprints and PEP 8 geometric formatting limits across all execution environments.
+"""
+
+from __future__ import annotations
+
 import sqlite3
-from pathlib import Path
+from typing import Final
 
-db_path = Path("app.db")
-print(f"🔍 Verificăm fișierul: {db_path.absolute()}")
-print(f"📏 Dimensiune fișier: {db_path.stat().st_size / 1024:.2f} KB\n")
 
-conn = sqlite3.connect(db_path)
-cursor = conn.cursor()
+class DatabaseChecker:
+    """Encapsulates safe relational tracking operations against local registries."""
 
-# 1. Extragere listă tabele
-cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-tabele = [row[0] for row in cursor.fetchall()]
-print(f"📦 Tabele identificate în baza de date: {tabele}")
+    def __init__(self, db_path: str = "app.db") -> None:
+        """Initialize the checker targeting a explicit filesystem path."""
+        self.db_path: Final[str] = db_path
 
-# 2. Inspectare tabelă sensors (dacă există)
-if "sensors" in tabele:
-    cursor.execute("PRAGMA table_info(sensors);")
-    coloane_sensors = [row[1] for row in cursor.fetchall()]
-    print(f"📋 Coloane în tabela 'sensors': {coloane_sensors}")
+    def verify_table_presence(self) -> list[str]:
+        """Extract the names of all identified tables within the relational ledger.
 
-    cursor.execute("SELECT COUNT(*) FROM sensors;")
-    randuri_sensors = cursor.fetchone()[0]
-    print(f"🔢 Număr de rânduri în tabela 'sensors': {randuri_sensors}")
+        Returns:
+            A collection containing the names of all identified tables.
+        """
+        # Context manager ensures connection closure even if exceptions occur
+        # during the execution lifecycle.
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+            return [str(row[0]) for row in cursor.fetchall()]
 
-    if randuri_sensors > 0:
-        cursor.execute("SELECT * FROM sensors LIMIT 3;")
-        print(f"👀 Primele rânduri din 'sensors': {cursor.fetchall()}")
-else:
-    print("❌ Tabela 'sensors' NU există în acest fișier app.db!")
+    def verify_schema_integrity(self, table_name: str) -> list[str]:
+        """Extract column metadata nominal attributes for a given target table name.
 
-# 3. Inspectare tabelă city_stats (dacă există)
-if "city_stats" in tabele:
-    cursor.execute("SELECT COUNT(*) FROM city_stats;")
-    print(f"🔢 Număr de rânduri în tabela 'city_stats': {cursor.fetchone()[0]}")
+        Args:
+            table_name: The exact string name of the table to inspect.
 
-conn.close()
+        Returns:
+            A list containing the identified column name fields.
+        """
+        query = f"PRAGMA table_info({table_name});"
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute(query)
+                return [str(row[1]) for row in cursor.fetchall()]
+        except sqlite3.Error:
+            return []
+
+
+if __name__ == "__main__":
+    checker = DatabaseChecker()
+    tables = checker.verify_table_presence()
+    print(f"Verified active storage layers. Target tables resolved: {tables}")

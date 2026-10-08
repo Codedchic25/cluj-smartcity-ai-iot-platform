@@ -57,7 +57,7 @@ class CityStat(Base):
 
     sensor_id: Mapped[int] = mapped_column(
         Integer,
-        ForeignKey("sensors.id"),
+        ForeignKey("sensors.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
@@ -72,8 +72,8 @@ class CityStat(Base):
         nullable=True,
     )
 
-    traffic_load: Mapped[int | None] = mapped_column(
-        Integer,
+    traffic_load: Mapped[float | None] = mapped_column(
+        REAL,
         nullable=True,
     )
 
@@ -99,6 +99,7 @@ class CityStat(Base):
     )
 
     __table_args__ = (
+        # Index optimizing multi-column spatial-temporal analytics queries
         Index(
             "idx_city_stats_sensor_timestamp",
             "sensor_id",
@@ -108,14 +109,15 @@ class CityStat(Base):
 
 
 class Setting(Base):
-    """Configurable alert thresholds database persistent blueprint mapping metrics constants."""
+    """Configurable alert thresholds database persistent blueprint mapping constants."""
 
     __tablename__ = "settings"
 
-    id: Mapped[int] = mapped_column(
+    # Aligned schema structure with seed execution constraints using sensor_id
+    sensor_id: Mapped[int] = mapped_column(
         Integer,
+        ForeignKey("sensors.id", ondelete="CASCADE"),
         primary_key=True,
-        autoincrement=True,
     )
 
     temp_limit: Mapped[float] = mapped_column(
@@ -144,7 +146,7 @@ class Setting(Base):
 
 
 class User(Base):
-    """Application identities used specifically by the secure bcrypt entry authenticator threads."""
+    """Application identities used specifically by the secure bcrypt authenticator."""
 
     __tablename__ = "users"
 

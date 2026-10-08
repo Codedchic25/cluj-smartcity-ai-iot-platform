@@ -1,10 +1,15 @@
-
-# Cache bypass commit for Railway deployment 2026
+# =============================================================================
+# Unified Project Configuration Ledger & Dependency Architecture
+# =============================================================================
+# Role: Centralizes ecosystem metadata, precise environment constraints,
+# requirements, and strict automated linting/formatting rules for the
+# Smart City Cluj-Napoca AI-IoT Platform deployment pipeline.
+# =============================================================================
 
 [project]
 name = "smart-city-cluj-napoca"
 version = "0.1.0"
-description = "Portfolio-grade Python application combining IoT telemetry, real-time urban monitoring, ML, and LLMs."
+description = "IoT telemetry, real-time urban monitoring, ML, and LLMs platform."
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
@@ -48,20 +53,53 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "pytest>=8.0.0"
+    "pytest>=8.0.0",
+    "ruff>=0.3.0",
 ]
 
 [tool.uv]
 managed = true
-
+# =============================================================================
+# Ruff Tooling Configuration Layer
+# =============================================================================
 [tool.ruff]
 target-version = "py312"
 line-length = 100
 
+[tool.ruff.lint]
+# Active Rule Systems:
+# E/W = PEP8 errors and warnings
+# F = Pyflakes (logic bugs & unused vars)
+# I = Isort (clean automated import sorting)
+# N = PEP8 Naming conventions enforcement
+# D = Docstring style validations (PEP 257)
+# UP = Pyupgrade (modernized Python 3.12 syntax optimizations)
+# B = Bugbear (vulnerability anti-patterns detection)
+select = ["E", "W", "F", "I", "N", "D", "UP", "B"]
+
+# Preserved project-specific exemptions alongside architectural allowances
+ignore = ["DTZ005", "N999", "BLE001", "S110"]
+
+[tool.ruff.lint.pydocstyle]
+# Enforces the professional Google Style guide for docstrings across all modules
+convention = "google"
+
+[tool.ruff.lint.isort]
+# Combines identical structural module sub-elements cleanly
+combine-as-imports = true
+force-wrap-aliases = true
+
+[tool.ruff.format]
+# Enforces industry standard formatting parameters uniformly
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+# =============================================================================
+# PyTest Execution Engine Environments
+# =============================================================================
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["ai_tests", "app", "src"]
 python_files = ["test_*.py", "*_test.py"]
-
-[tool.ruff.lint]
-ignore = ["DTZ005", "N999", "BLE001", "S110"]

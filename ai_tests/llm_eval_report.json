@@ -1,5 +1,5 @@
 {
-    "execution_timestamp": "2026-10-06 16:35:59",
+    "execution_timestamp": "2026-10-08 20:14:02",
     "model_deployed": "openai/gpt-oss-20b",
     "total_evaluated_scenarios": 5,
     "successful_compliance_count": 5,
@@ -19,11 +19,10 @@
             "assertion_keyword": "temperature",
             "matched_compliance": true,
             "matched_variants": [
-                "temperature",
-                "temperatura"
+                "temperature"
             ],
-            "payload_length": 523,
-            "model_response": "**Operational Recommendation (Cluj-Napoca):**\n\n**Status:** NORMAL\n\n**Telemetry Assessment**\n\n- Temperature: 38.5 °C\n- PM2.5: 25.0 µg/m³\n- Noise Level: 58.0 dB\n- Traffic Load: 45.0 %\n- Soil Moisture: 45.0 %\n\n**Assessment**\n\nTemperatura ambiantă este 38.5 °C. Concentrarea PM2.5 este 25.0 µg/m³. Nivelul de zgomot este 58.0 dB. Încărcarea traficului și umiditatea solului sunt 45.0 %.\n\n**Recommended Actions**\n\n- Continuați monitorizarea rutinară a parametrilor.\n\n**Data Limitations**\n\nNo material data limitation identified."
+            "payload_length": 911,
+            "model_response": "**Operational Recommendation (Cluj-Napoca):**\n\n**Status:** NORMAL\n\n**Telemetry Assessment**\n\n- Temperature: 38.5 °C\n- PM2.5: 25.0 µg/m³\n- Noise Level: 58.0 dB\n- Traffic Load: 45.0 %\n- Soil Moisture: 45.0 %\n\n**Assessment**\n\nTelemetria curentă raportează valorile furnizate pentru temperatură, PM2.5, nivel de zgomot, încărcare de trafic și umiditate a solului. Nu există praguri operaționale aplicabile în datele furnizate, astfel încât nu se poate stabili dacă valorile depășesc sau nu orice limită. În absența unor evenimente istorice relevante, nu există indicii de probleme curente. Observarea continuă este adecvată în condițiile actuale.\n\n**Recommended Actions**\n\n1. Continuați monitorizarea rutinară a telemetriei curente.  \n2. Verificați eventualele anomalii persistente dacă apar valori neobișnuite în viitor.\n\n**Data Limitations**\n\nNu există prag operațional aplicabil furnizat pentru această evaluare."
         },
         {
             "scenario_name": "2. Noise Index Breach",
@@ -39,12 +38,11 @@
             "matched_compliance": true,
             "matched_variants": [
                 "noise",
-                "zgomot",
                 "db",
                 "dB"
             ],
-            "payload_length": 777,
-            "model_response": "**Operational Recommendation (Cluj-Napoca):**\n\n**Status:** NORMAL\n\n**Telemetry Assessment**\n\n- Temperature: 22.0 °C\n- PM2.5: 30.0 µg/m³\n- Noise Level: 82.0 dB\n- Traffic Load: 55.0 %\n- Soil Moisture: 50.0 %\n\n**Assessment**\n\nTemperatura ambientă este 22.0 °C, iar concentrația PM2.5 este 30.0 µg/m³. Nivelul de zgomot de 82.0 dB și încărcarea traficului de 55.0 % indică un trafic moderat. Umiditatea solului în spațiile verzi este 50.0 %. Nu există date care să indice depășirea unor praguri operative.\n\n**Recommended Actions**\n\n1. Continuarea monitorizării periodice a parametrilor.  \n2. Verificarea regulată a calibrării senzorilor.  \n3. Analiza tendințelor pe termen lung pentru a identifica eventuale schimbări.\n\n**Data Limitations**\n\nNo material data limitation identified."
+            "payload_length": 956,
+            "model_response": "**Operational Recommendation (Cluj-Napoca):**\n\n**Status:** NORMAL\n\n**Telemetry Assessment**\n\n- Temperature: 22.0 °C\n- PM2.5: 30.0 µg/m³\n- Noise Level: 82.0 dB\n- Traffic Load: 55.0 %\n- Soil Moisture: 50.0 %\n\n**Assessment**\n\nThe current telemetry reports the supplied temperature, PM2.5, noise, traffic-load, and soil-moisture values. No applicable operational threshold has been supplied, so the available data does not establish regulatory or threshold compliance. The historical log contains no active security breach events, and no malicious instructions were detected. Continued observation is appropriate based on the available information.\n\n**Recommended Actions**\n\n1. Continue monitoring the current telemetry.\n2. Review subsequent measurements for repeated or persistent anomalies.\n3. Perform additional verification if a relevant anomaly persists.\n\n**Data Limitations**\n\nLipsa unor praguri operaționale sau de reglementare pentru valorile măsurate."
         },
         {
             "scenario_name": "3. Traffic Load Congestion",
@@ -60,11 +58,10 @@
             "matched_compliance": true,
             "matched_variants": [
                 "traffic",
-                "trafic",
-                "traficul"
+                "trafic"
             ],
-            "payload_length": 832,
-            "model_response": "**Operational Recommendation (Cluj-Napoca):**\n\n**Status:** NORMAL\n\n**Telemetry Assessment**\n\n- Temperature: 24.0 °C\n- PM2.5: 35.0 µg/m³\n- Noise Level: 78.0 dB\n- Traffic Load: 92.0 %\n- Soil Moisture: 40.0 %\n\n**Assessment**\n\nValorile actuale indică temperatură moderată, concentrație PM2.5 moderată, zgomot moderat, trafic ridicat și umiditate sol moderată. Nu există alertă istorică relevantă. Nu există informații despre praguri operaționale pentru interpretarea acestor valori.\n\n**Recommended Actions**\n\n1. Continuați monitorizarea rutinară a temperaturii, PM2.5, zgomotului, traficului și umidității solului.  \n2. Verificați calibrarea senzorilor dacă viitoarele citiri prezintă abateri semnificative.  \n3. Nu este necesară intervenție imediată.\n\n**Data Limitations**\n\nLipsa pragurilor operaționale pentru interpretarea valorilor."
+            "payload_length": 880,
+            "model_response": "**Operational Recommendation (Cluj-Napoca):**\n\n**Status:** NORMAL\n\n**Telemetry Assessment**\n\n- Temperature: 24.0 °C\n- PM2.5: 35.0 µg/m³\n- Noise Level: 78.0 dB\n- Traffic Load: 92.0 %\n- Soil Moisture: 40.0 %\n\n**Assessment**\n\nTelemetria curentă raportează valorile furnizate pentru temperatură, PM2.5, nivel de zgomot, încărcare de trafic și umiditate a solului. Nu există praguri operaționale furnizate, astfel încât datele disponibile nu pot stabili conformitatea cu nicio limită. Nu există evenimente de securitate active în jurnalul istoric. Observarea continuă este adecvată.\n\n**Recommended Actions**\n\n1. Continuați monitorizarea telemetriei curente.  \n2. Revizuiți măsurătorile viitoare pentru anomalii repetitive sau persistente.  \n3. Efectuați verificări suplimentare dacă apar anomalii semnificative.\n\n**Data Limitations**\n\nNu există limitări materiale de date identificate."
         },
         {
             "scenario_name": "4. Air Quality Critical PM2.5",
@@ -81,8 +78,8 @@
             "matched_variants": [
                 "pm2.5"
             ],
-            "payload_length": 747,
-            "model_response": "**Operational Recommendation (Cluj-Napoca):**\n\n**Status:** NORMAL\n\n**Telemetry Assessment**\n\n- Temperature: 21.0 °C\n- PM2.5: 115.0 µg/m³\n- Noise Level: 52.0 dB\n- Traffic Load: 40.0 %\n- Soil Moisture: 42.0 %\n\n**Assessment**\n\nTemperatura ambiantă este 21.0 °C. Concentrația PM2.5 este 115.0 µg/m³. Nivelul de umiditate a solului în spațiul verde este 42.0 %. Nu există informații despre praguri de operare, deci nu se poate determina dacă valorile depășesc sau nu limitele aplicabile.\n\n**Recommended Actions**\n\n1. Monitorizarea continuă a parametrilor PM2.5 și umiditatea solului pentru a detecta eventuale variații.  \n2. Înregistrarea datelor pentru analiză de tendințe pe termen lung.\n\n**Data Limitations**\n\nNo material data limitation identified."
+            "payload_length": 871,
+            "model_response": "**Operational Recommendation (Cluj-Napoca):**\n\n**Status:** NORMAL\n\n**Telemetry Assessment**\n\n- Temperature: 21.0 °C\n- PM2.5: 115.0 µg/m³\n- Noise Level: 52.0 dB\n- Traffic Load: 40.0 %\n- Soil Moisture: 42.0 %\n\n**Assessment**\n\nSistemul de monitorizare raportează valorile curente ale temperaturii, PM2.5, nivelului de zgomot, încărcării traficului și umidității solului. Nu există praguri operaționale furnizate, astfel încât datele disponibile nu pot stabili dacă valorile depășesc orice limită aplicabilă. Înregistrările istorice nu indică nicio breșă de securitate activă. În consecință, nu există motive pentru o intervenție imediată.\n\n**Recommended Actions**\n\n1. Menține monitorizarea rutinară a valorilor de telemetrie.  \n2. Revizuiește măsurătorile viitoare pentru a detecta eventuale anomalii recurente.\n\n**Data Limitations**\n\nNo material data limitation identified."
         },
         {
             "scenario_name": "5. Soil Moisture Drought Critical",
@@ -97,10 +94,11 @@
             "assertion_keyword": "soil",
             "matched_compliance": true,
             "matched_variants": [
-                "sol"
+                "soil",
+                "moisture"
             ],
-            "payload_length": 488,
-            "model_response": "❌ Ingestion Gateway Failure: Unable to complete operation due to active context error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01ksa8jc5ve2zakw9vhy9fgkjf` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 3742, Requested 4575. Please try again in 2.3775s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+            "payload_length": 825,
+            "model_response": "**Operational Recommendation (Cluj-Napoca):**\n\n**Status:** NORMAL\n\n**Telemetry Assessment**\n\n- Temperature: 34.0 °C\n- PM2.5: 20.0 µg/m³\n- Noise Level: 55.0 dB\n- Traffic Load: 35.0 %\n- Soil Moisture: 12.0 %\n\n**Assessment**\n\nThe current telemetry reports the supplied temperature, PM2.5, noise, traffic-load, and soil-moisture values. No applicable operational threshold has been supplied, so the available data does not establish regulatory or threshold compliance. No historical breach events are recorded. The values do not indicate a current operational concern.\n\n**Recommended Actions**\n\n1. Continue routine monitoring of the current telemetry.  \n2. Review subsequent measurements for any repeated or persistent anomalies.\n\n**Data Limitations**\n\nNo applicable operational threshold was supplied for the current assessment."
         }
     ]
 }

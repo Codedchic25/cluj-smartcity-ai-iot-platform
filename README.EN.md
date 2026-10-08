@@ -132,73 +132,18 @@ The project is intended as an engineering portfolio application rather than as a
 
 ---
 
-# 🧩 Main Capabilities
+## 🧩 Main Capabilities (Extended Workspace Engine)
 
-## 1. 📡 Urban Telemetry Monitoring
+The application coordinates five primary telemetry dimensions alongside an isolated native
+quality management layer designed to prevent code regressions and stale compiler cache states:
 
-The application works with five primary telemetry dimensions:
-
-| Metric        | Unit / Interpretation | Operational Purpose                   |
-| ------------- | --------------------- | ------------------------------------- |
-| Temperature   | °C                    | Heat and urban temperature monitoring |
-| Noise Level   | dB                    | Environmental noise monitoring        |
-| Traffic Load  | %                     | Traffic-density monitoring            |
-| Air Quality   | PM2.5-oriented index  | Air-quality degradation monitoring    |
-| Soil Moisture | %                     | Irrigation and drought monitoring     |
-
-Telemetry is persisted locally in:
-
-```text
-app.db
-```
-
-The SQLite schema contains:
-
-```text
-sensors
-city_stats
-settings
-```
-
-The `sensors` table stores monitoring nodes and geographic coordinates.
-
-The `city_stats` table stores timestamped telemetry.
-
-The `settings` table stores configurable threshold boundaries for each sensor/node.
+* 📡 **Asynchronous Telemetry:** Real-time data persistence engine powered by SQLite.
+* 🧠 **Cognitive AI Grounding:** Context-aware prompts with automatic `<think>` tag sanitization.
+* 🛡️ **Defensive Testing Matrix:** Multilingual variant verification using automated Pytest paths.
+* 🧹 **Native Windows Automation:** Background cache eviction layers deployed inside PowerShell cores.
 
 ---
 
-# 🗄️ Local Persistence Layer
-
-The active runtime persistence implementation uses **SQLite3 directly** through repository/data-access classes.
-
-The central repository layer:
-
-* initializes missing database structures
-* creates required tables using defensive DDL
-* reads sensor metadata
-* reads telemetry
-* reads threshold configuration
-* updates operational thresholds
-* performs transactional writes
-* uses parameterized SQL queries
-* keeps database operations isolated from UI rendering
-
-The application database is intentionally local:
-
-```text
-app.db
-```
-
-The active runtime connection layer is based on Python's native:
-
-```python
-sqlite3
-```
-
-The project also declares SQLAlchemy, Alembic and `aiosqlite` among its dependency stack for the broader project/tooling ecosystem, but the current Streamlit runtime path uses the direct SQLite repository implementation.
-
----
 
 # 🏗️ Application Architecture
 
@@ -1173,31 +1118,19 @@ The currently active Streamlit runtime should be distinguished from dependencies
 
 ---
 
-# 🧹 Code Quality
+## 🧹 Code Quality & Local Automation Matrix
 
-The repository uses:
+The repository implements a rigid automated quality enforcement gate through `Ruff` to guarantee
+that all operational modules align completely with strict enterprise coding criteria.
 
-```text
-Ruff
-```
-
-for formatting and static analysis.
-
-Recommended commands:
+To eliminate compiler buffer discrepancies, clean structural cache tables, and apply style fixes
+natively on Windows environments without third-party dependencies, run the automated pipeline:
 
 ```powershell
-uv run ruff format .
-uv run ruff check .
+.\scripts\lint.ps1
 ```
 
-To automatically apply supported fixes:
-
-```powershell
-uv run ruff check . --fix
-```
-
-The project is configured for Python 3.12 syntax and a maximum Ruff line length of 100 characters.
-
+This unifies background directory purging with advanced code standard validations.
 ---
 
 # 🧪 Complete Local Validation
@@ -1237,65 +1170,46 @@ with the model identifier, execution timestamp, scenario results, matched semant
 
 ---
 
-# ▶️ Local Installation
+## 🧹 Clean Local Reset & Cache Eviction
 
-## 1. Clone the repository
+When intentionally rebuilding the local demonstration state or erasing compiler buffer chains,
+execute the dedicated automation layer to guarantee absolute workspace purity:
 
 ```powershell
-git clone https://github.com/Codedchic25/Codedchic25-cluj-smartcity-iot-advanced.git
+.\scripts\lint.ps1
+```
+
+The underlying script dispatches an isolated PowerShell background job to asynchronously evict:
+* `__pycache__` directories
+* `.pytest_cache` repositories
+* `.ruff_cache` analytical indices
+
+Immediately following cache cleanup, the pipeline enforces Phase 1 (Ruff aesthetic formatting)
+and Phase 2 (Advanced stylistic logic adjustments with automated fixes) across all 43 files.
+
+---
+
+## ▶️ Local Installation & Quality Assurance
+
+To initialize, validate, and launch the platform environment cleanly from scratch:
+
+```powershell
+# 1. Clone the repository and navigate into the root directory
+git clone https://github.com
 cd Codedchic25-cluj-smartcity-iot-advanced
-```
 
-## 2. Create / synchronize the environment
-
-Using `uv`:
-
-```powershell
+# 2. Synchronize project dependencies using uv managed workflows
 uv sync
-```
 
-## 3. Configure environment variables
+# 3. Clean local cache and verify absolute code quality compliance
+.\scripts\lint.ps1
 
-Create:
+# 4. Execute the parameterized automated regression test suites
+uv run pytest -v
 
-```text
-.env
-```
-
-based on the expected configuration.
-
-Example:
-
-```env
-DATABASE_PATH=app.db
-
-PLATFORM_ADMIN_USER=your_admin_username
-PLATFORM_ADMIN_PASS=your_password_hash
-
-GROQ_API_KEY=your_groq_api_key
-
-OPERATOR_FULL_NAME=your_operator_name
-```
-
-Never commit the real `.env` file.
-
-## 4. Initialize / seed local data
-
-If a clean local database is required:
-
-```powershell
-uv run python seed_db.py
-```
-
-The application itself also contains defensive database initialization logic and can create the required SQLite schema when the database structures are missing.
-
-## 5. Run the application
-
-```powershell
+# 5. Launch the smart city urban monitoring dashboard portal
 uv run streamlit run main.py
 ```
-
-The application will start through Streamlit's default local interface.
 
 ---
 
@@ -1387,7 +1301,10 @@ For container-based workflows, configure the required environment variables thro
 
 ---
 
-# 📁 Project Structure
+# 📁 Project Structure (Updated Architecture Ledger)
+
+The structural hierarchy organizes core application logic, database migrations, automated
+testing pipelines, and administrative Windows local automation tooling:
 
 ```text
 Codedchic25-cluj-smartcity-iot-advanced/
@@ -1397,22 +1314,18 @@ Codedchic25-cluj-smartcity-iot-advanced/
 │
 ├── .github/
 │   └── workflows/
-│
-├── .vscode/
+│       └── ci.yml
 │
 ├── ai_tests/
 │   ├── prompts.txt
 │   ├── run_llm_eval.py
-│   └── llm_eval_report.json
+│   └─- llm_eval_report.json
 │
 ├── app/
 │   ├── ai/
 │   │   ├── ai_interface.py
 │   │   └── groq_provider.py
-│   │
-│   └── ...
-│
-├── assets/
+│   └── database/
 │
 ├── migrations/
 │
@@ -1421,49 +1334,23 @@ Codedchic25-cluj-smartcity-iot-advanced/
 │   ├── 2_Settings.py
 │   ├── 3_Analytics.py
 │   └── 4_About.py
-│
 ├── scripts/
+│   └── lint.ps1                  <── Native Quality & Cache Eviction Engine
 │
 ├── src/
 │   └── utils/
 │       └── local_alerts.py
 │
-├── .dockerignore
-├── .env.example
-├── .gitattributes
-├── .gitignore
-│
-├── ARCHITECTURE.md
-├── CHANGELOG.md
-├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md
-├── DISCLAIMER.md
 ├── Dockerfile
 ├── INTERVIEW_DEFENSE.md
-├── LICENSE
 ├── README.md
-├── README.EN.md
-├── README.RO.md
-├── ROADMAP.md
-├── SECURITY.md
-├── TESTING.md
-├── TROUBLESHOOTING.md
-├── URBAN_DEFENSE_QA.md
-├── URBAN_FAQ.md
-├── URBAN_MANUAL.md
-├── URBAN_WALKTHROUGH.md
-├── VISUAL_MATRIX.md
-│
-├── alembic.ini
 ├── check_db.py
 ├── main.py
 ├── pyproject.toml
 ├── seed_db.py
 ├── translations.py
 └── uv.lock
-```
 
----
 
 # 🧱 Main Application Components
 

@@ -1,5 +1,5 @@
 # ============================================================================
-# STAGE 1 — Builder (Instalare rapidă dependințe Python)
+# STAGE 1 — Builder (Fast Python Dependency Installation Layer)
 # ============================================================================
 FROM python:3.12-slim-bookworm AS builder
 
@@ -12,9 +12,8 @@ COPY pyproject.toml uv.lock ./
 # Corrected native uv invocation targeting PEP 621 metadata layout bounds
 RUN uv pip install --system . \
     && uv pip install --system asyncpg psycopg2-binary
-
 # ============================================================================
-# STAGE 2 — Production Layer (Imagine stabilă și curată de rulare)
+# STAGE 2 — Production Layer (Stable and Light Runtime Environment)
 # ============================================================================
 FROM python:3.12-slim-bookworm
 
@@ -29,7 +28,8 @@ ENV PYTHONUNBUFFERED=1 \
     STREAMLIT_SERVER_HEADLESS=true \
     STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
 
-COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/lib/python3.12/site-packages \
+    /usr/local/lib/python3.12/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 COPY . /workspace/
 
@@ -41,5 +41,6 @@ HEALTHCHECK --interval=30s \
     --retries=3 \
     CMD curl --fail http://localhost:${PORT:-8501}/_stcore/health || exit 1
 
-# Pornire rapidă, curată și nativă
-CMD ["sh", "-c", "python seed_db.py && streamlit run main.py --server.port=${PORT:-8501} --server.address=0.0.0.0"]
+# Non-blocking infrastructure startup sequence
+CMD ["sh", "-c", "python seed_db.py && \
+    streamlit run main.py --server.port=${PORT:-8501} --server.address=0.0.0.0"]
