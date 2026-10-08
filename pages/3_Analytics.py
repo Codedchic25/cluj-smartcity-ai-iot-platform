@@ -30,7 +30,7 @@ class AnalyticsEngine:
     def compute_linear_regression(
         df: pd.DataFrame, x_col: str, y_col: str
     ) -> tuple[np.ndarray, float, float]:
-        """Calculate a linear regression sequence targeting trend vectors via NumPy polyfit."""
+        """Calculate a linear regression sequence targeting trend vectors via polyfit."""
         if df.empty or len(df) < 2:
             return np.array([]), 0.0, 0.0
         try:
@@ -40,7 +40,6 @@ class AnalyticsEngine:
             return slope * x_data + intercept, float(slope), float(intercept)
         except (np.RankWarning, ValueError, TypeError):
             return np.array([]), 0.0, 0.0
-
     @classmethod
     def generate_heatmap(cls, df: pd.DataFrame, metrics: list[str]) -> go.Figure:
         """Generate high-contrast Pearson correlation matrix heatmap plots for dark views."""
@@ -104,8 +103,11 @@ class AnalyticsEngine:
             plot_bgcolor="rgba(0,0,0,0)",
             showlegend=False,
         )
+
         return fig
-            @classmethod
+
+
+    @classmethod
     def generate_marginal_distribution_plot(
         cls, df: pd.DataFrame, x_col: str, y_col: str
     ) -> go.Figure:
@@ -163,8 +165,6 @@ class AnalyticsEngine:
             paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)"
         )
         return fig
-
-
 class AnalyticsPage:
     """Orchestrates the visualization lifecycle of the analytics view."""
 
@@ -195,7 +195,7 @@ class AnalyticsPage:
         self._sync_query_params()
         if not st.session_state.get("authenticated", False):
             st.warning(
-                "Restricted access! Please authenticate on the platform index view."
+                "Restricted access! Please authenticate on the main index."
             )
             st.stop()
 
@@ -233,9 +233,9 @@ class AnalyticsPage:
                 ).fetchone()
                 sensor_id = int(row[0]) if row else 1
                 query = """
-                    SELECT timestamp, temperature, noise_level, traffic_load, 
+                    SELECT timestamp, temperature, noise_level, traffic_load,
                            air_quality, soil_moisture
-                    FROM city_stats WHERE sensor_id = ? 
+                    FROM city_stats WHERE sensor_id = ?
                     ORDER BY timestamp DESC LIMIT 50
                 """
                 df = pd.read_sql_query(query, conn, params=(sensor_id,))
@@ -250,20 +250,15 @@ class AnalyticsPage:
     def display(self) -> None:
         """Execute core pipeline modeling transformations and views layout."""
         st.set_page_config(
-            page_title="Smart City Cluj - Analytics", page_icon="chart", layout="wide"
+            page_title="Smart City Cluj - Analytics",
+            page_icon="chart",
+            layout="wide",
         )
         self.enforce_authentication()
 
         provider = TranslationProvider(
             default_language=st.session_state.get("lang", "EN")
         )
-        
-        # Curățăm dinamic titlurile din registry de orice simbol rezidual la runtime
-        clean_title = provider.get("ml_title").replace("ðŸ🧬 ", "").replace("🔮 ", "")
-        clean_heatmap = provider.get("pearson_heatmap_title").replace("ðŸ“Š ", "").replace("📊 ", "")
-        clean_radar = provider.get("ml_model_caption").replace("ðŸ“Ž ", "").replace("🎯 ", "")
-        clean_forecast = provider.get("ml_forecast_section").replace("ðŸž─ ", "").replace("🤖 ", "")
-        clean_assistant = provider.get("ai_assistant").replace("ðŸ🧠 ", "").replace("🧠 ", "")
 
         active_translations_dict = provider._REGISTRY.get(
             provider.current_language, provider._REGISTRY["EN"]
@@ -271,7 +266,7 @@ class AnalyticsPage:
 
         selected_sensor = render_full_global_sidebar(active_translations_dict)
 
-        st.title(clean_title)
+        st.title(provider.get("ml_title"))
         st.caption(
             f"Core statistical analytics matrix and forecasting: "
             f"{selected_sensor}"
@@ -283,7 +278,7 @@ class AnalyticsPage:
         col_grid1, col_grid2 = st.columns([1.2, 1])
 
         with col_grid1:
-            st.markdown(f"#### {clean_heatmap}")
+            st.markdown(f"#### {provider.get('pearson_heatmap_title')}")
             fig_corr = AnalyticsEngine.generate_heatmap(
                 df_analytics, self._metrics_list
             )
@@ -291,7 +286,7 @@ class AnalyticsPage:
 
         with col_grid2:
             st.markdown(
-                f"#### Normalized District Urban Balance Signature (Radar)"
+                "#### Normalized District Urban Balance Signature (Radar)"
             )
             fig_radar = AnalyticsEngine.generate_urban_radar_chart(
                 df_analytics, self._metrics_list, selected_sensor
@@ -311,7 +306,7 @@ class AnalyticsPage:
 
         st.divider()
 
-        st.markdown(f"#### {clean_forecast}")
+        st.markdown(f"#### {provider.get('ml_forecast_section')}")
 
         col_x, col_y = st.columns(2)
         with col_x:
@@ -348,14 +343,14 @@ class AnalyticsPage:
             fig_ml.update_yaxes(tickformat=".1f")
             fig_ml.update_xaxes(tickformat=".1f")
             st.plotly_chart(fig_ml, use_container_width=True)
-            st.caption(f"Model engine: {clean_radar}")
+            st.caption(f"Model engine: {provider.get('ml_model_caption')}")
         else:
             st.warning(
                 "Computational failure: Insufficient historical records."
             )
 
         st.divider()
-        with st.expander(clean_assistant, expanded=True):
+        with st.expander(provider.get("ai_assistant"), expanded=True):
             render_ai_assistant(
                 location=selected_sensor,
                 temperature=df_analytics["temperature"].iloc[-1],
@@ -370,4 +365,3 @@ class AnalyticsPage:
 if __name__ == "__main__":
     page = AnalyticsPage()
     page.display()
-
